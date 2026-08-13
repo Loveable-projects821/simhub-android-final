@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity() {
         add(Manifest.permission.READ_SMS)
         add(Manifest.permission.SEND_SMS)
         add(Manifest.permission.ANSWER_PHONE_CALLS)
+        add(Manifest.permission.CALL_PHONE)
+        add(Manifest.permission.READ_CONTACTS)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             add(Manifest.permission.POST_NOTIFICATIONS)
         }
@@ -53,6 +55,27 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.startButton).setOnClickListener {
             requestPermissionsAndStart()
+        }
+
+        val resultText = findViewById<TextView>(R.id.captureResultText)
+        findViewById<Button>(R.id.testCaptureButton).setOnClickListener {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissionLauncher.launch(arrayOf(Manifest.permission.RECORD_AUDIO))
+                return@setOnClickListener
+            }
+            resultText.text = "Testing… stay on the call for ~15 seconds"
+            Thread {
+                val results = VoiceCallCapture.runAllTests()
+                val summary = results.joinToString("\n") { r ->
+                    "${r.source}: init=${r.initialized} " +
+                        "gotAudio=${r.gotNonSilentAudio} avgAmp=${r.averageAmplitude}"
+                }
+                runOnUiThread {
+                    resultText.text = summary
+                }
+            }.start()
         }
     }
 

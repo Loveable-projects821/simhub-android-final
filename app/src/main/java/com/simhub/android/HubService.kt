@@ -38,7 +38,12 @@ class HubService : Service() {
         createNotificationChannel()
         startForeground(NOTIF_ID, buildNotification("Hub running — PIN $currentPin"))
 
-        wsServer = WsServer(PORT, currentPin) { log -> updateNotification(log) }
+        val commandHandler = CommandHandler(applicationContext) { json -> wsServer.broadcastToPaired(json) }
+        wsServer = WsServer(
+            PORT, currentPin,
+            onEvent = { log -> updateNotification(log) },
+            onCommand = { json -> commandHandler.handle(json) }
+        )
         wsServer.start()
 
         signalMonitor = SignalMonitor(applicationContext)

@@ -18,7 +18,8 @@ import java.net.InetSocketAddress
 class WsServer(
     port: Int,
     private val expectedPin: String,
-    private val onEvent: (String) -> Unit
+    private val onEvent: (String) -> Unit,
+    private val onCommand: (JSONObject) -> Unit
 ) : WebSocketServer(InetSocketAddress(port)) {
 
     private val pairedClients = mutableSetOf<WebSocket>()
@@ -52,7 +53,10 @@ class WsServer(
                         conn.close()
                     }
                 }
-                // Room for future inbound commands from iPhone, e.g. "dial", "send_sms", "answer_call"
+                "dial", "send_sms", "get_contacts", "answer_call", "end_call",
+                "webrtc_offer", "webrtc_answer", "webrtc_ice" -> {
+                    onCommand(json)
+                }
                 else -> onEvent("Unhandled message: $message")
             }
         } catch (e: Exception) {

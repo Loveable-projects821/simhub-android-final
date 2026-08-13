@@ -46,4 +46,19 @@
         android:layout_marginTop="32dp"
         android:text="Start Hub" />
 
+    <Button
+        android:id="@+id/testCaptureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Test Call Audio Capture (run during a real call)" />
+
+    <TextView
+        android:id="@+id/captureResultText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="13sp"
+        android:fontFamily="monospace" />
+
 </LinearLayout>
