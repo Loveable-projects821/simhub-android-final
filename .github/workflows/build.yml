@@ -18,7 +18,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-- name: Generate Gradle 8.2 wrapper
+      - name: Generate Gradle 8.2 wrapper
         run: gradle wrapper --gradle-version 8.2 --no-daemon
 
       - name: Build debug APK
